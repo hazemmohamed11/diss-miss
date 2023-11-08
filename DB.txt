@@ -1,0 +1,126 @@
+-- User Management
+CREATE TABLE Users (
+    user_id INT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    registration_date TIMESTAMP
+);
+
+CREATE TABLE UserProfile (
+    user_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    user_settings JSON,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE Address (
+    address_id INT PRIMARY KEY,
+    user_id INT,
+    street_address VARCHAR(255),
+    city VARCHAR(50),
+    state VARCHAR(50),
+    postal_code VARCHAR(20),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE PaymentMethod (
+    payment_id INT PRIMARY KEY,
+    user_id INT,
+    method_type VARCHAR(50),
+    card_number VARCHAR(16),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+-- Product Management
+CREATE TABLE Products (
+    product_id INT PRIMARY KEY,
+    name VARCHAR(255),
+    description TEXT,
+    price DECIMAL(10, 2),
+    category VARCHAR(50),
+    stock INT
+);
+
+CREATE TABLE ProductMedia (
+    media_id INT PRIMARY KEY,
+    product_id INT,
+    media_url VARCHAR(255),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+
+CREATE TABLE ProductReview (
+    review_id INT PRIMARY KEY,
+    product_id INT,
+    user_id INT,
+    rating INT,
+    review_text TEXT,
+    review_date TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES Products(product_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+-- Shopping Cart and Checkout
+CREATE TABLE ShoppingCart (
+    cart_id INT PRIMARY KEY,
+    user_id INT,
+    product_id INT,
+    quantity INT,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+
+CREATE TABLE Orders (
+    order_id INT PRIMARY KEY,
+    user_id INT,
+    order_date TIMESTAMP,
+    total_cost DECIMAL(10, 2),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE PaymentTransaction (
+    transaction_id INT PRIMARY KEY,
+    order_id INT,
+    payment_method_id INT,
+    amount DECIMAL(10, 2),
+    transaction_status VARCHAR(50),
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+    FOREIGN KEY (payment_method_id) REFERENCES PaymentMethod(payment_id)
+);
+
+-- Shipping and Inventory Management
+CREATE TABLE ShippingOption (
+    shipping_id INT PRIMARY KEY,
+    option_name VARCHAR(50),
+    cost DECIMAL(10, 2)
+);
+
+CREATE TABLE Shipping (
+    shipping_id INT PRIMARY KEY,
+    order_id INT,
+    shipping_option_id INT,
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+    FOREIGN KEY (shipping_option_id) REFERENCES ShippingOption(shipping_id)
+);
+
+CREATE TABLE Inventory (
+    product_id INT PRIMARY KEY,
+    stock INT,
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+
+-- Vouchers
+CREATE TABLE Vouchers (
+    voucher_id INT PRIMARY KEY,
+    voucher_code VARCHAR(20) UNIQUE,
+    discount DECIMAL(10, 2)
+);
+
+CREATE TABLE OrderVouchers (
+    order_id INT,
+    voucher_id INT,
+    PRIMARY KEY (order_id, voucher_id),
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+    FOREIGN KEY (voucher_id) REFERENCES Vouchers(voucher_id)
+);
