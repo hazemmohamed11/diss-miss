@@ -1,31 +1,44 @@
 <?php
 //http://localhost/diss&miss/getProduct.php?productId=0
+//http://localhost/diss&miss/getProduct.php
+
+header('Content-Type: application/json');
+
 $host = 'localhost';
-$dbname = 'diss&miss';
+$db = 'diss&miss';
 $user = 'root';
-$password = '';
+$pass = '';
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    if (isset($_GET['productId'])) {
-        $productId = $_GET['productId'];
-
-        $query = "SELECT * FROM products WHERE product_id = :productId";
-        $statement = $pdo->prepare($query);
-        $statement->bindParam(':productId', $productId, PDO::PARAM_INT);
-        $statement->execute();
-
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-        echo json_encode($result);
-    } else {
-        echo json_encode(['error' => 'Product ID not provided']);
-    }
+    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
 } catch (PDOException $e) {
-    echo json_encode(['error' => 'Database connection error']);
+    die("Error: " . $e->getMessage());
+}
+
+// Check if a specific product ID is provided in the URL
+if (isset($_GET['product_id'])) {
+    $productId = $_GET['product_id'];
+
+    $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id = :product_id");
+    $stmt->bindParam(':product_id', $productId);
+
+    if ($stmt->execute()) {
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+        echo json_encode($product);
+    } else {
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to fetch product']);
+    }
+} else {
+    // Fetch all products
+    $stmt = $pdo->query("SELECT * FROM products");
+
+    if ($stmt) {
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode($products);
+    } else {
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to fetch products']);
+    }
 }
 ?>
-
-
