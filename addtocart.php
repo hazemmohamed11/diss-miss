@@ -2,6 +2,9 @@
 // addtocart.php
 
 header('Content-Type: application/json');
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 
 // Assuming you have a database connection
 $host = 'localhost';
@@ -19,9 +22,37 @@ try {
 $data = json_decode(file_get_contents('php://input'), true);
 
 // Check if required data is present
-if (!isset($data['user_id'], $data['product_id'], $data['quantity'])) {
+if (!isset($data['user_id'], $data['product_id'], $data['quantity'], $data['token'])) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid data']);
+    exit;
+}
+
+// Verify JWT token
+$secret_key = "hazem"; // Replace with your actual secret key
+$token = $data['token'];
+
+function jwt_decode($jwt, $key) {
+    $tks = explode('.', $jwt);
+    if (count($tks) != 3) {
+        return false;
+    }
+    list($headb64, $payloadb64, $cryptob64) = $tks;
+    $header = json_decode(base64_decode($headb64), true);
+    $payload = json_decode(base64_decode($payloadb64), true);
+    $signature = base64_decode($cryptob64);
+    $hash = hash_hmac('sha256', $headb64 . '.' . $payloadb64, $key, true);
+    if (hash_equals($signature, $hash)) {
+        return $payload;
+    }
+    return false;
+}
+
+$decoded = jwt_decode($token, $secret_key);
+
+if (!$decoded) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Invalid token']);
     exit;
 }
 
