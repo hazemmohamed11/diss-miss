@@ -1,391 +1,157 @@
--- phpMyAdmin SQL Dump
--- version 5.1.0
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: Nov 14, 2023 at 02:34 AM
--- Server version: 10.4.19-MariaDB
--- PHP Version: 7.3.28
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `diss&miss`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `address`
---
-
-CREATE TABLE `address` (
-  `address_id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `street_address` varchar(255) DEFAULT NULL,
-  `city` varchar(50) DEFAULT NULL,
-  `state` varchar(50) DEFAULT NULL,
-  `postal_code` varchar(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `inventory`
---
-
-CREATE TABLE `inventory` (
-  `product_id` int(11) NOT NULL,
-  `stock` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `orders`
---
-
-CREATE TABLE `orders` (
-  `order_id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `order_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `total_cost` decimal(10,2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `ordervouchers`
---
-
-CREATE TABLE `ordervouchers` (
-  `order_id` int(11) NOT NULL,
-  `voucher_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `paymentmethod`
---
-
-CREATE TABLE `paymentmethod` (
-  `payment_id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `method_type` varchar(50) DEFAULT NULL,
-  `card_number` varchar(16) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `paymenttransaction`
---
-
-CREATE TABLE `paymenttransaction` (
-  `transaction_id` int(11) NOT NULL,
-  `order_id` int(11) DEFAULT NULL,
-  `payment_method_id` int(11) DEFAULT NULL,
-  `amount` decimal(10,2) DEFAULT NULL,
-  `transaction_status` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `productreview`
---
-
-CREATE TABLE `productreview` (
-  `review_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `rating` int(11) NOT NULL,
-  `review_text` text NOT NULL,
-  `review_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `products`
---
-
-CREATE TABLE `products` (
-  `product_id` int(11) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `description` text DEFAULT NULL,
-  `price` decimal(10,2) DEFAULT NULL,
-  `category` varchar(50) DEFAULT NULL,
-  `stock` int(11) DEFAULT NULL,
-  `media_url` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shipping`
---
-
-CREATE TABLE `shipping` (
-  `shipping_id` int(11) NOT NULL,
-  `order_id` int(11) DEFAULT NULL,
-  `shipping_option_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shippingoption`
---
-
-CREATE TABLE `shippingoption` (
-  `shipping_id` int(11) NOT NULL,
-  `option_name` varchar(50) DEFAULT NULL,
-  `cost` decimal(10,2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `shoppingcart`
---
-
-CREATE TABLE `shoppingcart` (
-  `cart_id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `product_id` int(11) DEFAULT NULL,
-  `quantity` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `userprofile`
---
-
-CREATE TABLE `userprofile` (
-  `user_id` int(11) NOT NULL,
-  `first_name` varchar(50) DEFAULT NULL,
-  `last_name` varchar(50) DEFAULT NULL,
-  `user_settings` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`user_settings`))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `users`
---
-
 CREATE TABLE `users` (
-  `user_id` int(11) NOT NULL,
-  `username` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `registration_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `user_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `username` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `registration_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+-- Table structure for table `products`
+CREATE TABLE `products` (
+  `product_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `name` VARCHAR(255),
+  `description` TEXT,
+  `price` DECIMAL(10,2),
+  `category` VARCHAR(50),
+  `stock` INT,
+  `media_url` VARCHAR(255)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `vouchers`
---
-
-CREATE TABLE `vouchers` (
-  `voucher_id` int(11) NOT NULL,
-  `voucher_code` varchar(20) DEFAULT NULL,
-  `discount` decimal(10,2) DEFAULT NULL
+-- Table structure for table `address`
+CREATE TABLE `address` (
+  `address_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT,
+  `street_address` VARCHAR(255),
+  `city` VARCHAR(50),
+  `state` VARCHAR(50),
+  `postal_code` VARCHAR(20),
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Indexes for dumped tables
---
+-- --------------------------------------------------------
 
---
--- Indexes for table `address`
---
-ALTER TABLE `address`
-  ADD PRIMARY KEY (`address_id`),
-  ADD KEY `user_id` (`user_id`);
+-- Table structure for table `inventory`
+CREATE TABLE `inventory` (
+  `product_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `stock` INT,
+  FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Indexes for table `inventory`
---
-ALTER TABLE `inventory`
-  ADD PRIMARY KEY (`product_id`);
+-- --------------------------------------------------------
 
---
--- Indexes for table `orders`
---
-ALTER TABLE `orders`
-  ADD PRIMARY KEY (`order_id`),
-  ADD KEY `user_id` (`user_id`);
+-- Table structure for table `orders`
+CREATE TABLE `orders` (
+  `order_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT,
+  `order_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `total_cost` DECIMAL(10,2),
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Indexes for table `ordervouchers`
---
-ALTER TABLE `ordervouchers`
-  ADD PRIMARY KEY (`order_id`,`voucher_id`),
-  ADD KEY `voucher_id` (`voucher_id`);
+-- --------------------------------------------------------
 
---
--- Indexes for table `paymentmethod`
---
-ALTER TABLE `paymentmethod`
-  ADD PRIMARY KEY (`payment_id`),
-  ADD KEY `user_id` (`user_id`);
+-- Table structure for table `vouchers`
+CREATE TABLE `vouchers` (
+  `voucher_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `voucher_code` VARCHAR(20) UNIQUE,
+  `discount` DECIMAL(10,2)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Indexes for table `paymenttransaction`
---
-ALTER TABLE `paymenttransaction`
-  ADD PRIMARY KEY (`transaction_id`),
-  ADD KEY `order_id` (`order_id`),
-  ADD KEY `payment_method_id` (`payment_method_id`);
+-- --------------------------------------------------------
 
---
--- Indexes for table `productreview`
---
-ALTER TABLE `productreview`
-  ADD PRIMARY KEY (`review_id`),
-  ADD KEY `product_id` (`product_id`),
-  ADD KEY `user_id` (`user_id`);
+-- Table structure for table `ordervouchers`
+CREATE TABLE `ordervouchers` (
+  `order_id` INT,
+  `voucher_id` INT,
+  PRIMARY KEY (`order_id`, `voucher_id`),
+  FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
+  FOREIGN KEY (`voucher_id`) REFERENCES `vouchers` (`voucher_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Indexes for table `products`
---
-ALTER TABLE `products`
-  ADD PRIMARY KEY (`product_id`);
+-- --------------------------------------------------------
 
---
--- Indexes for table `shipping`
---
-ALTER TABLE `shipping`
-  ADD PRIMARY KEY (`shipping_id`),
-  ADD KEY `order_id` (`order_id`),
-  ADD KEY `shipping_option_id` (`shipping_option_id`);
+-- Table structure for table `paymentmethod`
+CREATE TABLE `paymentmethod` (
+  `payment_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT,
+  `method_type` VARCHAR(50),
+  `card_number` VARCHAR(16),
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Indexes for table `shippingoption`
---
-ALTER TABLE `shippingoption`
-  ADD PRIMARY KEY (`shipping_id`);
+-- --------------------------------------------------------
 
---
--- Indexes for table `shoppingcart`
---
-ALTER TABLE `shoppingcart`
-  ADD PRIMARY KEY (`cart_id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `product_id` (`product_id`);
+-- Table structure for table `paymenttransaction`
+CREATE TABLE `paymenttransaction` (
+  `transaction_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `order_id` INT,
+  `payment_method_id` INT,
+  `amount` DECIMAL(10,2),
+  `transaction_status` VARCHAR(50),
+  FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
+  FOREIGN KEY (`payment_method_id`) REFERENCES `paymentmethod` (`payment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Indexes for table `userprofile`
---
-ALTER TABLE `userprofile`
-  ADD PRIMARY KEY (`user_id`);
+-- --------------------------------------------------------
 
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`user_id`);
+-- Table structure for table `productreview`
+CREATE TABLE `productreview` (
+  `review_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `product_id` INT,
+  `user_id` INT,
+  `rating` INT,
+  `review_text` TEXT,
+  `review_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Indexes for table `vouchers`
---
-ALTER TABLE `vouchers`
-  ADD PRIMARY KEY (`voucher_id`),
-  ADD UNIQUE KEY `voucher_code` (`voucher_code`);
+-- --------------------------------------------------------
+-- Table structure for table `shippingoption`
+CREATE TABLE `shippingoption` (
+  `shipping_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `option_name` VARCHAR(50),
+  `cost` DECIMAL(10,2)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- AUTO_INCREMENT for dumped tables
---
 
---
--- AUTO_INCREMENT for table `productreview`
---
-ALTER TABLE `productreview`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT;
+-- Table structure for table `shipping`
+CREATE TABLE `shipping` (
+  `shipping_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `order_id` INT,
+  `shipping_option_id` INT,
+  FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
+  FOREIGN KEY (`shipping_option_id`) REFERENCES `shippingoption` (`shipping_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Constraints for dumped tables
---
+-- --------------------------------------------------------
 
---
--- Constraints for table `address`
---
-ALTER TABLE `address`
-  ADD CONSTRAINT `address_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
---
--- Constraints for table `inventory`
---
-ALTER TABLE `inventory`
-  ADD CONSTRAINT `inventory_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+-- --------------------------------------------------------
 
---
--- Constraints for table `orders`
---
-ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+-- Table structure for table `shoppingcart`
+CREATE TABLE `shoppingcart` (
+  `cart_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT,
+  `product_id` INT,
+  `quantity` INT,
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
+  FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Constraints for table `ordervouchers`
---
-ALTER TABLE `ordervouchers`
-  ADD CONSTRAINT `ordervouchers_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
-  ADD CONSTRAINT `ordervouchers_ibfk_2` FOREIGN KEY (`voucher_id`) REFERENCES `vouchers` (`voucher_id`);
+-- --------------------------------------------------------
 
---
--- Constraints for table `paymentmethod`
---
-ALTER TABLE `paymentmethod`
-  ADD CONSTRAINT `paymentmethod_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+-- Table structure for table `userprofile`
+CREATE TABLE `userprofile` (
+  `user_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `first_name` VARCHAR(50),
+  `last_name` VARCHAR(50),
+  `user_settings` LONGTEXT CHECK (JSON_VALID(`user_settings`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Constraints for table `paymenttransaction`
---
-ALTER TABLE `paymenttransaction`
-  ADD CONSTRAINT `paymenttransaction_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
-  ADD CONSTRAINT `paymenttransaction_ibfk_2` FOREIGN KEY (`payment_method_id`) REFERENCES `paymentmethod` (`payment_id`);
+-- --------------------------------------------------------
 
---
--- Constraints for table `productreview`
---
-ALTER TABLE `productreview`
-  ADD CONSTRAINT `productreview_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
-  ADD CONSTRAINT `productreview_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
-
---
--- Constraints for table `shipping`
---
-ALTER TABLE `shipping`
-  ADD CONSTRAINT `shipping_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`),
-  ADD CONSTRAINT `shipping_ibfk_2` FOREIGN KEY (`shipping_option_id`) REFERENCES `shippingoption` (`shipping_id`);
-
---
--- Constraints for table `shoppingcart`
---
-ALTER TABLE `shoppingcart`
-  ADD CONSTRAINT `shoppingcart_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
-  ADD CONSTRAINT `shoppingcart_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
-
---
--- Constraints for table `userprofile`
---
-ALTER TABLE `userprofile`
-  ADD CONSTRAINT `userprofile_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
