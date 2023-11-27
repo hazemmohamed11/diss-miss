@@ -20,11 +20,22 @@ if ($conn->connect_error) {
 }
 
 // Query to retrieve best sellers (grouped by code or name)
-$sql = "SELECT p.code, p.name, MAX(p.stock) AS max_stock, SUM(c.quantity) AS total_sold
-        FROM products p
-        LEFT JOIN shoppingcart c ON p.product_id = c.product_id
-        GROUP BY p.code, p.name
-        ORDER BY total_sold DESC";
+$sql = "SELECT
+            p.code,
+            p.name,
+            p.price,
+            p.category,
+            p.media_url AS image,
+            MAX(p.stock) AS max_stock,
+            SUM(c.quantity) AS total_sold
+        FROM
+            products p
+        LEFT JOIN
+            shoppingcart c ON p.product_id = c.product_id
+        GROUP BY
+            p.code, p.name
+        ORDER BY
+            total_sold DESC";
 
 $result = $conn->query($sql);
 
@@ -34,19 +45,24 @@ if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $code = $row["code"];
         $name = $row["name"];
+        $price = $row["price"];
+        $category = $row["category"];
+        $image = $row["image"];
         $maxStock = $row["max_stock"];
         $totalSold = $row["total_sold"];
 
         $groupedProducts[] = array(
             'code' => $code,
             'name' => $name,
+            'price' => $price,
+            'category' => $category,
+            'image' => $image,
             'max_stock' => $maxStock,
             'total_sold' => $totalSold
         );
     }
 
     // Output JSON response
-    header('Content-Type: application/json');
     echo json_encode($groupedProducts);
 } else {
     echo "No products found";
