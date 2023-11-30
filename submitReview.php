@@ -1,11 +1,12 @@
 <?php
-//http://localhost/diss&miss/submitReview.php
-//{
-   // "product_id": 0,
-    //"user_id": 0,
-    //"rating": 5,
-    //"review_text": "Great product!"
-  //}
+// http://localhost/diss&miss/submitReview.php
+// {
+//    "product_id": 0,
+//    "user_id": 0,
+//    "rating": 5,
+//    "review_text": "Great product!"
+// }
+
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
@@ -24,9 +25,38 @@ try {
 
 $data = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($data['product_id'], $data['user_id'], $data['rating'], $data['review_text'])) {
+if (!isset($data['product_id'], $data['user_id'], $data['rating'], $data['review_text'], $data['token'])) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid data']);
+    exit;
+}
+
+$secret_key = "hazem"; 
+$token = $data['token'];
+
+function custom_jwt_decode($jwt, $key) {
+    $parts = explode('.', $jwt);
+    if (count($parts) !== 3) {
+        return false;
+    }
+
+    list($header, $payload, $signature) = $parts;
+
+    $verified_signature = hash_hmac('sha256', $header . '.' . $payload, $key, true);
+    $verified_signature_base64 = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($verified_signature));
+
+    if ($signature !== $verified_signature_base64) {
+        return false;
+    }
+
+    return json_decode(base64_decode($payload), true);
+}
+
+$decoded = custom_jwt_decode($token, $secret_key);
+
+if (!$decoded) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Invalid token']);
     exit;
 }
 

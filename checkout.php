@@ -23,9 +23,38 @@ try {
 $data = json_decode(file_get_contents('php://input'), true);
 
 // Check if required data is present
-if (!isset($data['user_id'])) {
+if (!isset($data['user_id'], $data['token'])) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid data']);
+    exit;
+}
+
+$secret_key = "hazem"; // Replace with your actual secret key
+$token = $data['token'];
+
+function custom_jwt_decode($jwt, $key) {
+    $parts = explode('.', $jwt);
+    if (count($parts) !== 3) {
+        return false;
+    }
+
+    list($header, $payload, $signature) = $parts;
+
+    $verified_signature = hash_hmac('sha256', $header . '.' . $payload, $key, true);
+    $verified_signature_base64 = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($verified_signature));
+
+    if ($signature !== $verified_signature_base64) {
+        return false;
+    }
+
+    return json_decode(base64_decode($payload), true);
+}
+
+$decoded = custom_jwt_decode($token, $secret_key);
+
+if (!$decoded || $decoded['user_id'] !== $data['user_id']) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Invalid token']);
     exit;
 }
 
@@ -47,11 +76,7 @@ try {
         }
     }
 
-    // If all checks pass, proceed with the checkout logic
-    // ...
-
-    // Update product quantities in the database after successful checkout
-    foreach ($cartItems as $item) {
+      foreach ($cartItems as $item) {
         $newStock = $item['stock'] - $item['quantity'];
         $updateSql = "UPDATE products SET stock = :new_stock WHERE product_id = :product_id";
         $updateStmt = $pdo->prepare($updateSql);

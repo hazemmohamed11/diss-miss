@@ -28,27 +28,28 @@ if (!isset($data['user_id'], $data['product_id'], $data['quantity'], $data['toke
     exit;
 }
 
-// Verify JWT token
-$secret_key = "hazem"; // Replace with your actual secret key
+$secret_key = "hazem"; 
 $token = $data['token'];
 
-function jwt_decode($jwt, $key) {
-    $tks = explode('.', $jwt);
-    if (count($tks) != 3) {
+function custom_jwt_decode($jwt, $key) {
+    $parts = explode('.', $jwt);
+    if (count($parts) !== 3) {
         return false;
     }
-    list($headb64, $payloadb64, $cryptob64) = $tks;
-    $header = json_decode(base64_decode($headb64), true);
-    $payload = json_decode(base64_decode($payloadb64), true);
-    $signature = base64_decode($cryptob64);
-    $hash = hash_hmac('sha256', $headb64 . '.' . $payloadb64, $key, true);
-    if (hash_equals($signature, $hash)) {
-        return $payload;
+
+    list($header, $payload, $signature) = $parts;
+
+    $verified_signature = hash_hmac('sha256', $header . '.' . $payload, $key, true);
+    $verified_signature_base64 = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($verified_signature));
+
+    if ($signature !== $verified_signature_base64) {
+        return false;
     }
-    return false;
+
+    return json_decode(base64_decode($payload), true);
 }
 
-$decoded = jwt_decode($token, $secret_key);
+$decoded = custom_jwt_decode($token, $secret_key);
 
 if (!$decoded) {
     http_response_code(401);
