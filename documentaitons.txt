@@ -1,0 +1,30 @@
+VIEW CART
+{
+   "user_id": 3,
+"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Imhhem9tYWFkbW9uIiwiZW1haWwiOiJoYXpvbWFAZ21haWwuY29tIn0.VEFoxWFHbKAc6bd0awXXIMGiwU-FdLM09KScnefH7sM"
+}
+
+
+submitreview
+{
+   "product_id": 1,
+   "user_id": 1,
+   "rating": 5,
+   "review_text": "Great product!",
+"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Imhhem9tYWFkbW9uIiwiZW1haWwiOiJoYXpvbWFAZ21haWwuY29tIn0.VEFoxWFHbKAc6bd0awXXIMGiwU-FdLM09KScnefH7sM"
+}
+
+Checkout
+{
+   "user_id": 3,
+ "token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Imhhem9tYWFkbW9uIiwiZW1haWwiOiJoYXpvbWFAZ21haWwuY29tIn0.VEFoxWFHbKAc6bd0awXXIMGiwU-FdLM09KScnefH7sM"
+ }
+ 
+ 
+ addtocart
+ {
+   "user_id": 3,
+   "product_id": 1,
+   "quantity": 1,
+"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Imhhem9tYWFkbW9uIiwiZW1haWwiOiJoYXpvbWFAZ21haWwuY29tIn0.VEFoxWFHbKAc6bd0awXXIMGiwU-FdLM09KScnefH7sM"
+}
