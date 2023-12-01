@@ -19,12 +19,12 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Query to retrieve best sellers (grouped by code or name)
+// Query to retrieve best sellers (grouped by name)
 $sql = "SELECT
-            p.code,
             p.name,
             p.price,
             p.category,
+            p.description,
             p.media_url AS image,
             MAX(p.stock) AS max_stock,
             SUM(c.quantity) AS total_sold
@@ -33,7 +33,7 @@ $sql = "SELECT
         LEFT JOIN
             shoppingcart c ON p.product_id = c.product_id
         GROUP BY
-            p.code, p.name
+            p.name
         ORDER BY
             total_sold DESC";
 
@@ -43,19 +43,19 @@ if ($result->num_rows > 0) {
     $groupedProducts = array();
 
     while ($row = $result->fetch_assoc()) {
-        $code = $row["code"];
         $name = $row["name"];
         $price = $row["price"];
         $category = $row["category"];
+        $description = $row["description"];
         $image = $row["image"];
         $maxStock = $row["max_stock"];
         $totalSold = $row["total_sold"];
 
         $groupedProducts[] = array(
-            'code' => $code,
             'name' => $name,
             'price' => $price,
             'category' => $category,
+            'description' => $description,
             'image' => $image,
             'max_stock' => $maxStock,
             'total_sold' => $totalSold
