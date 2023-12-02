@@ -5,10 +5,6 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 
-// /products_by_code_or_name.php?param=YourProductName
-///products_by_code_or_name.php?param=YourProductCodeOrID
-//http://localhost/diss&miss/detailsproduct.php?param=ch1
-//http://localhost/diss&miss/detailsproduct.php?param=chemise
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -26,22 +22,47 @@ if ($conn->connect_error) {
 $param = $_GET['param'];
 
 // Query to retrieve products with the same code, name, or product_id
-$sql = "SELECT * FROM products WHERE code = ? OR name = ? OR product_id = ?";
+$sql = "SELECT * FROM products WHERE name = ? ";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ssi", $param, $param, $param);
+
+// Bind the parameter
+$stmt->bind_param("s", $param);
 $stmt->execute();
 $result = $stmt->get_result();
 
-if ($result->num_rows > 0) {
+if ($result !== false && $result->num_rows > 0) {
     $productsByCodeOrName = array();
+    $productsByColor = array();
 
     while ($row = $result->fetch_assoc()) {
         $productsByCodeOrName[] = $row;
+
+        $color = $row['color'];
+        $size = $row['size'];
+        $medium = $row['media_url'];
+
+        
+        if (!array_key_exists($color, $productsByColor)) {
+            $productsByColor[$color] = array('sizes' => array(), 'media_url' => null);
+        }
+
+        if (!in_array($size, $productsByColor[$color]['sizes'])) {
+            $productsByColor[$color]['sizes'][] = $size;
+        }
+
+        if ($productsByColor[$color]['media_url'] === null && $medium !== null) {
+            $productsByColor[$color]['media_url'] = $medium;
+        }
     }
 
     // Output JSON response
+    $response = array(
+        'productsByName' => $productsByCodeOrName,
+        'productsByColor' => $productsByColor,
+    );
+
     header('Content-Type: application/json');
-    echo json_encode($productsByCodeOrName);
+    echo json_encode($response);
 } else {
     echo "No products found";
 }
