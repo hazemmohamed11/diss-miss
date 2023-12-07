@@ -28,3 +28,16 @@ Checkout
    "quantity": 1,
 "token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Imhhem9tYWFkbW9uIiwiZW1haWwiOiJoYXpvbWFAZ21haWwuY29tIn0.VEFoxWFHbKAc6bd0awXXIMGiwU-FdLM09KScnefH7sM"
 }
+Update cart
+{
+  "user_id": 1,
+  "token": "your_token_here",
+  "product_id": 123,
+  "quantity": 3
+}
+Delete cart
+{
+   "user_id": 3,
+   "product_id": 1,
+"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Imhhem9tYWFkbW9uIiwiZW1haWwiOiJoYXpvbWFAZ21haWwuY29tIn0.VEFoxWFHbKAc6bd0awXXIMGiwU-FdLM09KScnefH7sM"
+}
