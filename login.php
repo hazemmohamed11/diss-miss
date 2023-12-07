@@ -6,7 +6,7 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $data = json_decode(file_get_contents("php://input"));
-    $username = $data->username;
+    $identifier = $data->identifier; // This can be either username or email
     $password = $data->password;
 
     $conn = new mysqli("localhost", "root", "", "diss&miss");
@@ -15,8 +15,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $stmt = $conn->prepare("SELECT user_id, username, email, password FROM Users WHERE username = ?");
-    $stmt->bind_param("s", $username);
+    $stmt = $conn->prepare("SELECT user_id, username, email, password FROM Users WHERE username = ? OR email = ?");
+    $stmt->bind_param("ss", $identifier, $identifier);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (password_verify($password, $hashedPassword)) {
             // Generate JWT
-            $secret_key = "hazem"; 
+            $secret_key = "hazem";
             $payload = array(
                 "user_id" => $row["user_id"],
                 "username" => $row["username"],
