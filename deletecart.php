@@ -1,5 +1,5 @@
 <?php
-// viewcart.php
+// deletecart.php
 
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
@@ -21,7 +21,7 @@ try {
 // Sample data from frontend (you need to replace this with actual data from your frontend)
 $data = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($data['user_id'], $data['token'])) {
+if (!isset($data['user_id'], $data['token'], $data['product_id'])) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid data']);
     exit;
@@ -57,16 +57,17 @@ if (!$decoded || $decoded['user_id'] !== $data['user_id']) {
 }
 
 $user_id = $data['user_id'];
+$product_id = $data['product_id'];
 
-// Fetch cart items for the user
-$stmt = $pdo->prepare("SELECT p.product_id, p.name, p.price, p.media_url, c.quantity, (p.price * c.quantity) as total_cost FROM shoppingcart c JOIN products p ON c.product_id = p.product_id WHERE c.user_id = :user_id");
+// Delete item from the shopping cart
+$stmt = $pdo->prepare("DELETE FROM shoppingcart WHERE user_id = :user_id AND product_id = :product_id");
 $stmt->bindParam(':user_id', $user_id);
+$stmt->bindParam(':product_id', $product_id);
 
 if ($stmt->execute()) {
-    $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo json_encode($cartItems);
+    echo json_encode(['success' => true, 'message' => 'Item deleted from the cart']);
 } else {
     http_response_code(500);
-    echo json_encode(['error' => 'Failed to fetch cart items']);
+    echo json_encode(['error' => 'Failed to delete item from the cart']);
 }
 ?>

@@ -1,5 +1,5 @@
 <?php
-// viewcart.php
+// updatecart.php
 
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
@@ -21,7 +21,7 @@ try {
 // Sample data from frontend (you need to replace this with actual data from your frontend)
 $data = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($data['user_id'], $data['token'])) {
+if (!isset($data['user_id'], $data['token'], $data['cart_items'])) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid data']);
     exit;
@@ -57,16 +57,20 @@ if (!$decoded || $decoded['user_id'] !== $data['user_id']) {
 }
 
 $user_id = $data['user_id'];
+$cart_items = $data['cart_items'];
 
-// Fetch cart items for the user
-$stmt = $pdo->prepare("SELECT p.product_id, p.name, p.price, p.media_url, c.quantity, (p.price * c.quantity) as total_cost FROM shoppingcart c JOIN products p ON c.product_id = p.product_id WHERE c.user_id = :user_id");
-$stmt->bindParam(':user_id', $user_id);
+// Update items in the shopping cart
+foreach ($cart_items as $item) {
+    $product_id = $item['product_id'];
+    $quantity = $item['quantity'];
 
-if ($stmt->execute()) {
-    $cartItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo json_encode($cartItems);
-} else {
-    http_response_code(500);
-    echo json_encode(['error' => 'Failed to fetch cart items']);
+    $stmt = $pdo->prepare("UPDATE shoppingcart SET quantity = :quantity WHERE user_id = :user_id AND product_id = :product_id");
+    $stmt->bindParam(':quantity', $quantity);
+    $stmt->bindParam(':user_id', $user_id);
+    $stmt->bindParam(':product_id', $product_id);
+
+    $stmt->execute();
 }
+
+echo json_encode(['success' => true, 'message' => 'Cart updated successfully']);
 ?>
