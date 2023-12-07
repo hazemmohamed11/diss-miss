@@ -22,9 +22,9 @@ $data = json_decode(file_get_contents('php://input'), true);
 // Check if required data is present
 if (!isset($data['user_id'], $data['product_id'], $data['quantity'], $data['token'])) {
     http_response_code(400);
-    error_log('Invalid data received from React: ' . print_r($data, true));
-    echo json_encode(['error' => 'Invalid data']);
-    exit;
+$errorMsg = 'Invalid data received from React: ' . print_r($data, true);
+echo json_encode(['error' => $errorMsg]);
+exit;
 }
 
 $secret_key = "hazem"; 
