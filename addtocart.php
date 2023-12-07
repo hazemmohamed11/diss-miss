@@ -1,13 +1,11 @@
 <?php
-// addtocart.php
 
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
 header("Access-Control-Allow-Credentials: true");
-// Assuming you have a database connection
+
 $host = 'localhost';
 $db = 'diss&miss';
 $user = 'root';
@@ -19,12 +17,12 @@ try {
     die("Error: " . $e->getMessage());
 }
 
-// Sample data from React (you need to replace this with actual data from your React app)
 $data = json_decode(file_get_contents('php://input'), true);
 
 // Check if required data is present
 if (!isset($data['user_id'], $data['product_id'], $data['quantity'], $data['token'])) {
     http_response_code(400);
+    error_log('Invalid data received from React: ' . print_r($data, true));
     echo json_encode(['error' => 'Invalid data']);
     exit;
 }
@@ -58,7 +56,6 @@ if (!$decoded) {
     exit;
 }
 
-// Check product quantity before adding to the cart
 $sqlCheckQuantity = "SELECT stock FROM products WHERE product_id = :product_id";
 $stmtCheckQuantity = $pdo->prepare($sqlCheckQuantity);
 $stmtCheckQuantity->bindParam(':product_id', $data['product_id']);
@@ -72,7 +69,6 @@ if ($product['stock'] < $data['quantity']) {
     exit;
 }
 
-// Check if the product is already in the cart for the user
 $sqlCheckCart = "SELECT * FROM shoppingcart WHERE user_id = :user_id AND product_id = :product_id";
 $stmtCheckCart = $pdo->prepare($sqlCheckCart);
 $stmtCheckCart->bindParam(':user_id', $data['user_id']);
@@ -80,7 +76,6 @@ $stmtCheckCart->bindParam(':product_id', $data['product_id']);
 $stmtCheckCart->execute();
 
 if ($stmtCheckCart->rowCount() > 0) {
-    // Product is already in the cart, update the quantity
     $sqlUpdateCart = "UPDATE shoppingcart SET quantity = quantity + :quantity WHERE user_id = :user_id AND product_id = :product_id";
     $stmtUpdateCart = $pdo->prepare($sqlUpdateCart);
     $stmtUpdateCart->bindParam(':quantity', $data['quantity']);
@@ -94,7 +89,6 @@ if ($stmtCheckCart->rowCount() > 0) {
         echo json_encode(['error' => 'Failed to update product quantity in the cart']);
     }
 } else {
-    // Product is not in the cart, insert into the cart
     $sqlAddToCart = "INSERT INTO shoppingcart (user_id, product_id, quantity) VALUES (:user_id, :product_id, :quantity)";
     $stmtAddToCart = $pdo->prepare($sqlAddToCart);
     $stmtAddToCart->bindParam(':user_id', $data['user_id']);
@@ -108,4 +102,5 @@ if ($stmtCheckCart->rowCount() > 0) {
         echo json_encode(['error' => 'Failed to add product to the cart']);
     }
 }
+
 ?>
