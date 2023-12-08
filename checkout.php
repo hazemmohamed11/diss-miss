@@ -23,7 +23,7 @@ try {
 $data = json_decode(file_get_contents('php://input'), true);
 
 // Check if required data is present
-if (!isset($data['user_id'], $data['token'])) {
+if (!isset($data['user_id'], $data['token'], $data['address_id'], $data['voucher_code'])) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid data']);
     exit;
@@ -76,7 +76,7 @@ try {
         }
     }
 
-      foreach ($cartItems as $item) {
+    foreach ($cartItems as $item) {
         $newStock = $item['stock'] - $item['quantity'];
         $updateSql = "UPDATE products SET stock = :new_stock WHERE product_id = :product_id";
         $updateStmt = $pdo->prepare($updateSql);
@@ -84,11 +84,6 @@ try {
         $updateStmt->bindParam(':product_id', $item['product_id']);
         $updateStmt->execute();
     }
-
-    // Create a record in the orders table
-    $orderSql = "INSERT INTO orders (user_id, total_cost) VALUES (:user_id, :total_cost)";
-    $orderStmt = $pdo->prepare($orderSql);
-    $orderStmt->bindParam(':user_id', $data['user_id']);
 
     // Calculate total cost based on the products in the cart
     $totalCost = 0;
@@ -105,7 +100,26 @@ try {
         $totalCost += $item['quantity'] * $productPrice;
     }
 
+    // Check and apply voucher discount
+    if (!empty($data['voucher_code'])) {
+        $voucherSql = "SELECT discount FROM vouchers WHERE voucher_code = :voucher_code";
+        $voucherStmt = $pdo->prepare($voucherSql);
+        $voucherStmt->bindParam(':voucher_code', $data['voucher_code']);
+        $voucherStmt->execute();
+        $voucherDiscount = $voucherStmt->fetchColumn();
+
+        if ($voucherDiscount) {
+            // Apply voucher discount to total cost
+            $totalCost -= $voucherDiscount;
+        }
+    }
+
+    // Create a record in the orders table
+    $orderSql = "INSERT INTO orders (user_id, total_cost, address_id) VALUES (:user_id, :total_cost, :address_id)";
+    $orderStmt = $pdo->prepare($orderSql);
+    $orderStmt->bindParam(':user_id', $data['user_id']);
     $orderStmt->bindParam(':total_cost', $totalCost);
+    $orderStmt->bindParam(':address_id', $data['address_id']);
     $orderStmt->execute();
 
     // Clear the shopping cart

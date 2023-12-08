@@ -3,7 +3,7 @@
 
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 
 // Assuming you have a database connection
@@ -68,5 +68,37 @@ if ($stmt->execute()) {
 } else {
     http_response_code(500);
     echo json_encode(['error' => 'Failed to fetch user profile']);
+    exit;
 }
+
+// Handle address during checkout
+if (isset($data['address_option'])) {
+    $addressOption = $data['address_option'];
+
+    if ($addressOption === 'new') {
+        // User wants to enter a new address
+        $streetAddress = $data['street_address'];
+        $city = $data['city'];
+        $state = $data['state'];
+        $postalCode = $data['postal_code'];
+
+        // Insert new address
+        $stmt = $pdo->prepare("INSERT INTO address (user_id, street_address, city, state, postal_code) VALUES (:user_id, :street_address, :city, :state, :postal_code)");
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':street_address', $streetAddress);
+        $stmt->bindParam(':city', $city);
+        $stmt->bindParam(':state', $state);
+        $stmt->bindParam(':postal_code', $postalCode);
+
+        if (!$stmt->execute()) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to insert new address']);
+            exit;
+        }
+    } elseif ($addressOption === 'same' && isset($data['selected_address_id'])) {
+        // User wants to use the same address or has a stored address
+        $addressId = $data['selected_address_id'];
+    }
+}
+
 ?>
