@@ -14,11 +14,14 @@ submitreview
 "token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Imhhem9tYWFkbW9uIiwiZW1haWwiOiJoYXpvbWFAZ21haWwuY29tIn0.VEFoxWFHbKAc6bd0awXXIMGiwU-FdLM09KScnefH7sM"
 }
 
-Checkout
+checkout
 {
-   "user_id": 3,
- "token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Imhhem9tYWFkbW9uIiwiZW1haWwiOiJoYXpvbWFAZ21haWwuY29tIn0.VEFoxWFHbKAc6bd0awXXIMGiwU-FdLM09KScnefH7sM"
- }
+    "user_id": 3,
+"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Imhhem9tYWFkbW9uIiwiZW1haWwiOiJoYXpvbWFAZ21haWwuY29tIn0.VEFoxWFHbKAc6bd0awXXIMGiwU-FdLM09KScnefH7sM",
+    "address_id": 1,
+    "voucher_code": "Rx13"
+}
+
  
  
  addtocart
