@@ -44,3 +44,23 @@ Delete cart
    "product_id": 1,
 "token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Imhhem9tYWFkbW9uIiwiZW1haWwiOiJoYXpvbWFAZ21haWwuY29tIn0.VEFoxWFHbKAc6bd0awXXIMGiwU-FdLM09KScnefH7sM"
 }
+
+
+profile to get data
+
+{
+ "user_id": 3,
+"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Imhhem9tYWFkbW9uIiwiZW1haWwiOiJoYXpvbWFAZ21haWwuY29tIn0.VEFoxWFHbKAc6bd0awXXIMGiwU-FdLM09KScnefH7sM"
+}
+
+Profile to insert new address
+
+{
+ "user_id": 3,
+"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Imhhem9tYWFkbW9uIiwiZW1haWwiOiJoYXpvbWFAZ21haWwuY29tIn0.VEFoxWFHbKAc6bd0awXXIMGiwU-FdLM09KScnefH7sM",
+"address_option": "new",
+    "street_address": "123 Main St",
+    "city": "Cityville",
+    "state": "Stateville",
+    "postal_code": "12345"
+}
