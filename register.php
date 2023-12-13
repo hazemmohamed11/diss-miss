@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = $data->email;
     $password = $data->password;
 
-    $conn = new mysqli("localhost", "root", "", "diss&miss");
+    $conn = new mysqli("sql207.infinityfree.com", "if0_35612830", "Jft20@hazem", "if0_35612830_diss_miss");
 
     if ($conn->connect_error) {
         die(json_encode(["success" => false, "message" => "Connection failed: " . $conn->connect_error]));
