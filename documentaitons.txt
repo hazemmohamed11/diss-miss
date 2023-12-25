@@ -31,13 +31,23 @@ checkout
    "quantity": 1,
 "token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Imhhem9tYWFkbW9uIiwiZW1haWwiOiJoYXpvbWFAZ21haWwuY29tIn0.VEFoxWFHbKAc6bd0awXXIMGiwU-FdLM09KScnefH7sM"
 }
+
 Update cart
 {
-  "user_id": 1,
-  "token": "your_token_here",
-  "product_id": 123,
-  "quantity": 3
+  "user_id": "your_user_id",
+  "token": "your_token",
+  "cart_items": [
+    {
+      "product_id": 1,
+      "quantity": 3
+    },
+    {
+      "product_id": 2,
+      "quantity": 2
+    }
+  ]
 }
+
 Delete cart
 {
    "user_id": 3,
@@ -49,18 +59,36 @@ Delete cart
 profile to get data
 
 {
- "user_id": 3,
-"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Imhhem9tYWFkbW9uIiwiZW1haWwiOiJoYXpvbWFAZ21haWwuY29tIn0.VEFoxWFHbKAc6bd0awXXIMGiwU-FdLM09KScnefH7sM"
+  "user_id": "your_user_id",
+  "token": "your_token"
 }
 
 Profile to insert new address
 
 {
- "user_id": 3,
-"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Imhhem9tYWFkbW9uIiwiZW1haWwiOiJoYXpvbWFAZ21haWwuY29tIn0.VEFoxWFHbKAc6bd0awXXIMGiwU-FdLM09KScnefH7sM",
-"address_option": "new",
-    "street_address": "123 Main St",
-    "city": "Cityville",
-    "state": "Stateville",
-    "postal_code": "12345"
+{
+  "user_id": "your_user_id",
+  "token": "your_token",
+  "address_option": "new",
+  "street_address": "New Street",
+  "city": "New City",
+  "state": "New State",
+  "postal_code": "12345"
+}
+Profi;e to reset password
+{
+{
+  "reset_password": true,
+  "reset_token": "your_reset_token",
+  "new_password": "new_password"
+}
+
+
+create order(create_product.php)
+{"code":"P001","name":"Product 1","description":"Description 1","price":19.99,"category":"Electronics","stock":50,"media_url":"http://example.com/image.jpg","size":"Medium","color":"Blue"}'
+}
+
+remove_from_cart.php
+{
+cart_id=1
 }
