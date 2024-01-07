@@ -452,6 +452,10 @@ ALTER TABLE `shipping`
 --
 -- Constraints for table `shoppingcart`
 --
+ALTER TABLE `orders` ADD `address_id` INT(11) DEFAULT NULL;
+
+ALTER TABLE `vouchers` ADD status ENUM('active', 'used', 'expired') DEFAULT 'active';
+
 ALTER TABLE `shoppingcart`
   ADD CONSTRAINT `shoppingcart_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
   ADD CONSTRAINT `shoppingcart_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
